@@ -55,8 +55,11 @@ pipeline {
         // NEW STAGE 2: Security Scan
         stage('Security Scan') {
             steps {
-                // Run Bandit security scan
-                bat "call ${VIRTUAL_ENV}\\Scripts\\activate && bandit -r ."
+                // Run Bandit security scan (UTF-8 fix)
+                bat """
+                set PYTHONIOENCODING=utf-8
+                call ${VIRTUAL_ENV}\\Scripts\\activate && bandit -r .
+                """
             }
         }
 
