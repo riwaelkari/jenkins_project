@@ -39,9 +39,36 @@ pipeline {
             }
         }
 
+        //  NEW STAGE 1: Coverage
+        stage('Coverage') {
+            steps {
+                // Run code coverage analysis and generate report
+                bat """
+                call ${VIRTUAL_ENV}\\Scripts\\activate
+                coverage run -m unittest discover -s tests
+                coverage report -m
+                coverage html -d coverage_html
+                """
+            }
+        }
+
+        // NEW STAGE 2: Security Scan
+        stage('Security Scan') {
+            steps {
+                // Run Bandit security scan
+                bat "call ${VIRTUAL_ENV}\\Scripts\\activate && bandit -r ."
+            }
+        }
+
         stage('Deploy') {
             steps {
-                bat 'echo Deploying application... '
+                // Implement a simple local deployment
+                bat """
+                if not exist deploy mkdir deploy
+                copy /Y app.py deploy\\
+                copy /Y requirements.txt deploy\\
+                call ${VIRTUAL_ENV}\\Scripts\\activate && python deploy\\app.py > deploy\\output.txt
+                """
             }
         }
     }
