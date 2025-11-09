@@ -9,17 +9,26 @@ pipeline {
         stage('Setup') {
             steps {
                 script {
-                    if (!fileExists("${env.WORKSPACE}/${VIRTUAL_ENV}")) {
-                        sh "python -m venv ${VIRTUAL_ENV}"
+                    // Tell Jenkins where Python is installed
+                    env.PATH = "C:\\Users\\rkriw\\AppData\\Local\\Programs\\Python\\Python311;" +
+                               "C:\\Users\\rkriw\\AppData\\Local\\Programs\\Python\\Python311\\Scripts;" +
+                               env.PATH
+
+                    // Create virtual environment if not exists
+                    if (!fileExists("${env.WORKSPACE}\\${VIRTUAL_ENV}")) {
+                        bat "python -m venv ${VIRTUAL_ENV}"
                     }
-                    sh "source ${VIRTUAL_ENV}/Scripts/activate && pip install -r requirements.txt"
+
+                    // Activate venv and install dependencies
+                    bat "call ${VIRTUAL_ENV}\\Scripts\\activate && pip install -r requirements.txt"
                 }
             }
         }
 
         stage('Test') {
             steps {
-                sh "source ${VIRTUAL_ENV}/Scripts/activate && python -m unittest discover -s tests"
+                // Run unit tests
+                bat "call ${VIRTUAL_ENV}\\Scripts\\activate && python -m unittest discover -s tests"
             }
         }
     }
