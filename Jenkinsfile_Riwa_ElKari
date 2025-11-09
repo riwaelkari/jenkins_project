@@ -25,10 +25,23 @@ pipeline {
             }
         }
 
+        stage('Lint') {
+            steps {
+                // Run flake8 to check code style
+                bat "call ${VIRTUAL_ENV}\\Scripts\\activate && flake8 app.py"
+            }
+        }
+
         stage('Test') {
             steps {
                 // Run unit tests
                 bat "call ${VIRTUAL_ENV}\\Scripts\\activate && python -m unittest discover -s tests"
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                bat 'echo Deploying application... '
             }
         }
     }
