@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    environment {
+        VIRTUAL_ENV = 'venv'
+    }
+
+    stages {
+        stage('Setup') {
+            steps {
+                script {
+                    if (!fileExists("${env.WORKSPACE}/${VIRTUAL_ENV}")) {
+                        sh "python -m venv ${VIRTUAL_ENV}"
+                    }
+                    sh "source ${VIRTUAL_ENV}/Scripts/activate && pip install -r requirements.txt"
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh "source ${VIRTUAL_ENV}/Scripts/activate && python -m unittest discover -s tests"
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
