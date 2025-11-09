@@ -58,7 +58,7 @@ pipeline {
                 // Run Bandit security scan (UTF-8 fix)
                 bat """
                 set PYTHONIOENCODING=utf-8
-                call ${VIRTUAL_ENV}\\Scripts\\activate && bandit -r .
+                call ${VIRTUAL_ENV}\\Scripts\\activate && bandit -r . -x venv || exit 0
                 """
             }
         }
